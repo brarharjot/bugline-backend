@@ -4,10 +4,14 @@ const Team = require("../models/team")
 //Get all teams owned or joined by the user
 teamRouter.get("/", async (request, response) => {
   const user = request.user
-  const teams = await Team.find({
-    members: { $all: [user._id] },
-  }).populate("members", { username: 1 })
-  response.json(teams)
+  if (user) {
+    const teams = await Team.find({
+      members: { $all: [user._id] },
+    }).populate("members", { username: 1 })
+    response.json(teams)
+  } else {
+    response.status(401).json({ error: "user not logged in" })
+  }
 })
 
 teamRouter.get("/:id", async (request, response) => {
@@ -129,7 +133,5 @@ teamRouter.put("/:id", async (request, response) => {
     }
   }
 })
-
-
 
 module.exports = teamRouter
