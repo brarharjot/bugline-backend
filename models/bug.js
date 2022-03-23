@@ -12,6 +12,7 @@ const bugSchema = new mongoose.Schema({
     enum: ["URGENT", "MEDIUM", "LOW"],
     default: "LOW",
   },
+  solved: { type: Boolean, required: true, default: false },
 })
 
 bugSchema.set("toJSON", {

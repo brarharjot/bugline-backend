@@ -6,8 +6,18 @@ teamRouter.get("/", async (request, response) => {
   const user = request.user
   const teams = await Team.find({
     members: { $all: [user._id] },
-  })
+  }).populate("members", { username: 1 })
   response.json(teams)
+})
+
+teamRouter.get("/:id", async (request, response) => {
+  const user = request.user
+  const team = await Team.findById(request.params.id)
+  if (team.members.contains(user._id)) {
+    response.json(team)
+  } else {
+    response.status(401).json({ error: "user is not a team member" })
+  }
 })
 
 //Get an invite link to a team owned by the user
@@ -24,6 +34,8 @@ teamRouter.get("/:id/invite", async (request, response) => {
     team.invites = team.invites.concat(invite)
     await team.save()
     response.json(invite)
+  } else {
+    response.status(401).json({ error: "token doesn't match team owner" })
   }
 })
 
@@ -45,6 +57,32 @@ teamRouter.post("/", async (request, response) => {
     user.teams = user.teams.concat(savedTeam._id)
     await user.save()
     response.status(201).json(savedTeam)
+  }
+})
+
+//Join a team from an invite link
+teamRouter.post("/:id/join/:link", async (request, response) => {
+  const user = request.user
+  if (!user) {
+    response.status(401).send({ error: "token missing or invalid" })
+  }
+  const team = await Team.findById(request.params.id)
+  if (!team) {
+    response.status(401).json({ error: "no team exists for provided id" })
+  }
+  const isInviteValid = team.invites.includes(request.params.link)
+  if (isInviteValid) {
+    if (team.members.includes(user._id)) {
+      response
+        .status(401)
+        .json({ error: "user is already a member of this team" })
+    } else {
+      team.members = team.members.concat(user._id)
+      const savedTeam = await team.save()
+      response.status(201).json(savedTeam)
+    }
+  } else {
+    response.status(401).json({ error: "invite not valid" })
   }
 })
 
@@ -91,5 +129,7 @@ teamRouter.put("/:id", async (request, response) => {
     }
   }
 })
+
+
 
 module.exports = teamRouter
