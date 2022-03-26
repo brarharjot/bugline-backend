@@ -17,7 +17,7 @@ teamRouter.get("/", async (request, response) => {
 teamRouter.get("/:id", async (request, response) => {
   const user = request.user
   const team = await Team.findById(request.params.id)
-  if (team.members.contains(user._id)) {
+  if (team.members.includes(user._id)) {
     response.json(team)
   } else {
     response.status(401).json({ error: "user is not a team member" })
