@@ -20,7 +20,7 @@ teamRouter.get("/:id", async (request, response) => {
     username: 1,
     name: 1,
   })
-  if (team.members.includes(user._id)) {
+  if (team.members.includes({ username: user.username, name: user.name })) {
     response.json(team)
   } else {
     response.status(401).json({ error: "user is not a team member" })
