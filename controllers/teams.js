@@ -16,7 +16,10 @@ teamRouter.get("/", async (request, response) => {
 
 teamRouter.get("/:id", async (request, response) => {
   const user = request.user
-  const team = await Team.findById(request.params.id)
+  const team = await Team.findById(request.params.id).populate("members", {
+    username: 1,
+    name: 1,
+  })
   if (team.members.includes(user._id)) {
     response.json(team)
   } else {
