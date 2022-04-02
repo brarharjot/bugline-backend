@@ -134,11 +134,11 @@ teamRouter.put("/:id", async (request, response) => {
         {
           new: true,
         }
-      )
-      response.status(200).json(updatedTeam).populate("members", {
+      ).populate("members", {
         username: 1,
         name: 1,
       })
+      response.status(200).json(updatedTeam)
     } else {
       response.status(401).json({ error: "token doesn't match team owner" })
     }
