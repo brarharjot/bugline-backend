@@ -73,7 +73,7 @@ teamRouter.post("/", async (request, response) => {
 })
 
 //Join a team from an invite link
-teamRouter.post("/:id/join/:link", async (request, response) => {
+teamRouter.get("/:id/join/:link", async (request, response) => {
   const user = request.user
   if (!user) {
     response.status(401).send({ error: "token missing or invalid" })
@@ -86,7 +86,7 @@ teamRouter.post("/:id/join/:link", async (request, response) => {
   if (isInviteValid) {
     if (team.members.includes(user._id)) {
       response
-        .status(401)
+        .status(400)
         .json({ error: "user is already a member of this team" })
     } else {
       team.members = team.members.concat(user._id)
@@ -94,7 +94,7 @@ teamRouter.post("/:id/join/:link", async (request, response) => {
       response.status(201).json(savedTeam)
     }
   } else {
-    response.status(401).json({ error: "invite not valid" })
+    response.status(400).json({ error: "invite not valid" })
   }
 })
 
