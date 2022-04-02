@@ -73,7 +73,7 @@ teamRouter.post("/", async (request, response) => {
 })
 
 //Join a team from an invite link
-teamRouter.post("/join/:link", async (request, response) => {
+teamRouter.get("/join/:link", async (request, response) => {
   const user = request.user
   if (!user) {
     response.status(401).send({ error: "token missing or invalid" })
