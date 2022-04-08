@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const bugSchema = new mongoose.Schema({
   name: { type: String, required: true },
   desc: { type: String, required: true },
+  team: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -12,7 +13,7 @@ const bugSchema = new mongoose.Schema({
     enum: ["URGENT", "MEDIUM", "LOW"],
     default: "LOW",
   },
-  solved: { type: Boolean, required: true, default: false },
+  solved: { type: Boolean, default: false },
 })
 
 bugSchema.set("toJSON", {

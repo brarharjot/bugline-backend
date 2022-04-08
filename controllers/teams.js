@@ -14,12 +14,15 @@ teamRouter.get("/", async (request, response) => {
   }
 })
 
+//Get a particular team
 teamRouter.get("/:id", async (request, response) => {
   const user = request.user
-  const team = await Team.findById(request.params.id).populate("members", {
-    username: 1,
-    name: 1,
-  })
+  const team = await Team.findById(request.params.id)
+    .populate("members", {
+      username: 1,
+      name: 1,
+    })
+    .populate("bugs", { name: 1, desc: 1 })
 
   const isUserMember = team.members.find(
     (member) => member.username === user.username
