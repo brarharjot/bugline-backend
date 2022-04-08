@@ -22,7 +22,7 @@ teamRouter.get("/:id", async (request, response) => {
       username: 1,
       name: 1,
     })
-    .populate("bugs", { name: 1, desc: 1 })
+    .populate("bugs")
 
   const isUserMember = team.members.find(
     (member) => member.username === user.username
