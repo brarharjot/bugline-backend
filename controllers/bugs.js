@@ -44,12 +44,12 @@ bugRouter.post("/:teamId", async (request, response) => {
 
       const savedBug = await bug.save()
       console.log("saved bug")
-      teamForBug.bugs.push(savedBug._id)
+      teamForBug.bugs = teamForBug.bugs.concat(savedBug._id)
       console.log("concated bugs to team")
-      const savedTeam = await teamForBug.save()
+      await teamForBug.save()
       console.log("saved team")
 
-      response.status(200).json(savedTeam)
+      response.status(200).json(teamForBug)
     }
   } else {
     response.status(401).json({ error: "user not logged in" })
