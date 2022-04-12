@@ -27,12 +27,10 @@ bugRouter.post("/:teamId", async (request, response) => {
         name: 1,
       }
     )
-    console.log(teamForBug)
     const isTeamMember = teamForBug.members.filter(
       (member) => member._id.toString() === user._id.toString()
     )
     if (isTeamMember.length > 0) {
-      console.log("member check passed")
       const bug = new Bug({
         name: body.name,
         desc: body.desc,
@@ -43,13 +41,10 @@ bugRouter.post("/:teamId", async (request, response) => {
       })
 
       const savedBug = await bug.save()
-      console.log("saved bug")
       teamForBug.bugs = teamForBug.bugs.concat(savedBug._id)
-      console.log("concated bugs to team")
       await teamForBug.save()
-      console.log("saved team")
-
-      response.status(200).json(teamForBug)
+      const teamToReturn = await teamForBug.populate("bugs")
+      response.status(201).json(teamToReturn)
     }
   } else {
     response.status(401).json({ error: "user not logged in" })
