@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const bugSchema = new mongoose.Schema({
   name: { type: String, required: true },
   desc: { type: String, required: true },
-  team: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  team: { type: mongoose.Schema.Types.ObjectId, ref: "Team" },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
