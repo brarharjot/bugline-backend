@@ -2,6 +2,7 @@ const bugRouter = require("express").Router()
 const Bug = require("../models/bug")
 const Team = require("../models/team")
 
+//Get all bugs for a specific team
 bugRouter.get("/:team", async (request, response) => {
   const user = request.user
   if (user) {
@@ -16,6 +17,7 @@ bugRouter.get("/:team", async (request, response) => {
   }
 })
 
+//Add a new bug report to a team
 bugRouter.post("/:teamId", async (request, response) => {
   const user = request.user
   const body = request.body
@@ -48,6 +50,27 @@ bugRouter.post("/:teamId", async (request, response) => {
     }
   } else {
     response.status(401).json({ error: "user not logged in" })
+  }
+})
+
+//Delete a bug
+bugRouter.delete("/:bugId", async (request, response) => {
+  const user = request.user
+  if (!user) {
+    response.status(401).send({ error: "token missing or invalid" })
+  } else {
+    const bugToDelete = await Bug.findById(request.params.bugId)
+    const teamForBug = await Team.findById(bugToDelete.team)
+    if (teamForBug.members.includes(user._id)) {
+      await Bug.findByIdAndRemove(request.params.bugId)
+      teamForBug.bugs = teamForBug.bugs.filter(
+        (bug) => bug._id.toString() !== request.params.bugId
+      )
+      teamForBug.save()
+      response.status(204).end()
+    } else {
+      response.status(401).json({ error: "token doesn't match bug owner" })
+    }
   }
 })
 
