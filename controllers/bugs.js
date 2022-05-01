@@ -74,4 +74,35 @@ bugRouter.delete("/:bugId", async (request, response) => {
   }
 })
 
+//Set bug as solved
+bugRouter.get("/:bugId/solved", async (request, response) => {
+  const user = request.user
+  if (!user) {
+    response.status(401).send({ error: "token missing or invalid" })
+  } else {
+    const bugToUpdate = await Bug.findById(request.params.bugId)
+    const teamForBug = await Team.findById(bugToUpdate.team)
+    if (teamForBug.members.includes(user._id)) {
+      const updatedBug = {
+        name: bugToUpdate.name,
+        desc: bugToUpdate.desc,
+        team: bugToUpdate.team,
+        creator: bugToUpdate.creator,
+        severity: bugToUpdate.severity,
+        solved: true,
+      }
+      const savedBug = await Bug.findByIdAndUpdate(
+        request.params.bugId,
+        updatedBug,
+        {
+          new: true,
+        }
+      )
+      response.status(200).json(savedBug)
+    } else {
+      response.status(401).json({ error: "token doesn't match bug owner" })
+    }
+  }
+})
+
 module.exports = bugRouter
