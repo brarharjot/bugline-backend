@@ -89,7 +89,7 @@ bugRouter.get("/:bugId/solved", async (request, response) => {
         team: bugToUpdate.team,
         creator: bugToUpdate.creator,
         severity: bugToUpdate.severity,
-        solved: true,
+        solved: !bugToUpdate.solved,
       }
       const savedBug = await Bug.findByIdAndUpdate(
         request.params.bugId,
