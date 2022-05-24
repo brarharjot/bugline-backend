@@ -26,9 +26,7 @@ npm run dev
 
 ## Deploy
 
-```sh
-node index.js
-```
+I used Heroku to deploy the backend. It can be accomplished using Heroku CLI or by adding your repository as a source in the Heroku Dashboard.
 
 ## Description
 
