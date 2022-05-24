@@ -10,6 +10,8 @@
 
 ### ✨ [Demo](https://bugline.vercel.app)
 
+### [Frontend Repo](https://github.com/brarharjot/bugline-frontend)
+
 ## Install
 
 ```sh
